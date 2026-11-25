@@ -1,0 +1,13 @@
+[Unit]
+Description=Linux Voice Input hotkey dictation daemon
+After=graphical-session.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/linux-voice-input
+ExecStart=%h/linux-voice-input/.venv/bin/python -m voice_input
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
