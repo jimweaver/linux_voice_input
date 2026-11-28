@@ -99,6 +99,7 @@ def apply_settings(
     api_key: str | None = None,
     run=subprocess.run,
 ) -> None:
+    config_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     set_config_value(config_path, "hotkey", hotkey)
     set_config_value(config_path, "language", language)
     if model is not None:

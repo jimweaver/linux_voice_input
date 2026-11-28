@@ -93,11 +93,8 @@ def test_normalize_language_rejects_invalid_codes():
         normalize_language("f9\"; drop table")
 
 
-def test_apply_settings_writes_model_device_api_key_and_chmod(tmp_path):
-    import os
-
-    p = tmp_path / "config.toml"
-    p.write_text('hotkey = "f9"\n')
+def test_apply_settings_creates_private_config_on_first_save(tmp_path):
+    p = tmp_path / ".config" / "linux-voice-input" / "config.toml"
     apply_settings(
         p, "f9", None, model="whisper-1", device="hw:1,0", api_key="sk-new",
         run=lambda *a, **k: subprocess.CompletedProcess(a, 0),
@@ -106,7 +103,8 @@ def test_apply_settings_writes_model_device_api_key_and_chmod(tmp_path):
     assert 'model = "whisper-1"' in text
     assert 'device = "hw:1,0"' in text
     assert 'api_key = "sk-new"' in text
-    assert os.stat(p).st_mode & 0o777 == 0o600
+    assert p.parent.stat().st_mode & 0o777 == 0o700
+    assert p.stat().st_mode & 0o777 == 0o600
 
 
 def test_apply_settings_blank_api_key_keeps_existing(tmp_path):
